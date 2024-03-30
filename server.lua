@@ -1,13 +1,9 @@
-local ia = getElementData(getResourceRootElement(getThisResource()), "XAC_42AK1YUHAC_IS_ACTIVE_vTyfcQv41b_AND_LICENSE_Z9orj7X0Lx_IS_CONFIRMED") or false
 
-setTimer(function()
-ia = getElementData(getResourceRootElement(getThisResource()), "XAC_42AK1YUHAC_IS_ACTIVE_vTyfcQv41b_AND_LICENSE_Z9orj7X0Lx_IS_CONFIRMED") or false
-end, 2000,0)
 function onElementDataChangeBasicAC(dataKey, oldValue, newValue)
-  if ia == false then return end
   if ADMIN_LEVEL_LOCK == true then
-    if (not client) then 
-      return false 
+    if not client or client != source then 
+      setElementData(source, dataKey, oldValue)
+      return false
     end
 
     for _, v in ipairs(ADMIN_LEVEL_DATANAMES) do 
@@ -21,24 +17,20 @@ addEventHandler("onElementDataChange", root, onElementDataChangeBasicAC)
 
 addEvent("outputForAll", true)
 addEventHandler("outputForAll", root, function(text, pass)
-  if pass ~= getXoopPassword() or ia == false then 
+  if pass ~= getXoopPassword() then 
   return end
-
-
   outputChatBox(text, root, 255,0,0,true)
 end )
 
 addEvent("xoopacban", true)
 addEventHandler("xoopacban", root, function(pass)
-  if pass ~= getXoopPassword() or ia == false or (client ~= source) then return end
-    banPlayer(source, true, true, true, "XoopAC", "XOOP-AC - You are banned because of cheating.\nDiscord: https://discord.gg/64UUabcPRt")
+  if pass ~= getXoopPassword() or (client ~= source) then return end
+  banPlayer(source, true, true, true, "XoopAC", "\nXOOP-AC - You are banned because of cheating.\nDiscord: https://discord.gg/64UUabcPRt")
 end)
-
---pCht 
 
 addEvent("xoopwh", true)
 addEventHandler("xoopwh", root, function(pass)
-  if pass ~= getXoopPassword() or ia == false then return end
+  if pass ~= getXoopPassword() then return end
 
   sendOptions = {
     queueName = "xwh",
@@ -63,31 +55,17 @@ end)
 
 addEvent("xoopstopresource", true)
 addEventHandler("xoopstopresource", root, function(resname,pass)
-  if pass ~= getXoopPassword() or ia == false then return end
+  if pass ~= getXoopPassword() then return end
   stopResource(getResourceFromName(resname))
 end)
 
 addEvent("xooptakejetpack", true)
 addEventHandler("xooptakejetpack", root, function(pass)
-  if pass ~= "xoopacishere" or ia == false then return end 
+  if pass ~= getXoopPassword() then return end 
   setPedWearingJetpack ( source, false )
 end )
 
 print("XOOP-AC DISCORD: https://discord.gg/64UUabcPRt")
-
-function vehicleEnter ( thePlayer, seat, jacked )
-  if ia == false then return end
-
-  setElementData(thePlayer, "isplayerinveh", true)
-end
-addEventHandler ( "onVehicleEnter", getRootElement(), vehicleEnter )
-
-function vehicleExit ( thePlayer, seat, jacked )
-  if ia == false then return end
-
-  setElementData(thePlayer, "isplayerinveh", false)
-end
-addEventHandler ( "onVehicleExit", getRootElement(), vehicleExit )
 
 local weaponsToBlock = {
 	[35] = true,
@@ -101,8 +79,6 @@ local weaponsToBlock = {
 
 }
 function onPlayerWeaponSwitch(previousWeaponID, currentWeaponID)
-  if ia == false then return end
-
 	local blockFire = (not weaponsToBlock[currentWeaponID])
 
 	toggleControl(source, "fire", blockFire)
@@ -111,3 +87,9 @@ function onPlayerWeaponSwitch(previousWeaponID, currentWeaponID)
   end 
 end
 addEventHandler("onPlayerWeaponSwitch", root, onPlayerWeaponSwitch)
+
+function processPlayerTriggerEventThreshold()
+  outputChatBox("#a8269d[#9f249aX#932196o#851d92o#76198ep#671589-#591185A#4d0e81C#440c7e] #ffffff"..getPlayerName(source).." was kicked for Event spamming.", root, 255,0,0,true)
+  kickPlayer(source, "\nXoopAC - Spam event.\n")
+end
+addEventHandler("onPlayerTriggerEventThreshold", root, processPlayerTriggerEventThreshold)

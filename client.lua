@@ -1,12 +1,5 @@
-local ia = getElementData(getResourceRootElement(getThisResource()), "XAC_42AK1YUHAC_IS_ACTIVE_vTyfcQv41b_AND_LICENSE_Z9orj7X0Lx_IS_CONFIRMED") or false
-
-setTimer(function()
-ia = getElementData(getResourceRootElement(getThisResource()), "XAC_42AK1YUHAC_IS_ACTIVE_vTyfcQv41b_AND_LICENSE_Z9orj7X0Lx_IS_CONFIRMED") or false
-
-end, 3000,0)
-
 function clientCheatScan()
-  if ia == false then return end
+  
   glp = getLocalPlayer()
   if isWorldSpecialPropertyEnabled("aircars") then
     clientCheat()
@@ -36,7 +29,7 @@ end
 setTimer(clientCheatScan, 2000, 0)
 
 function clientCheat()
-  if ia == false then return end
+  
 
   local worldSpecialProperties = {
   ["hovercars"] = false,
@@ -81,9 +74,7 @@ local blockedFunctions = {
   'setPedArmor',
 }
 
-function onPreFunction( sourceResource, functionName, isAllowedByACL, luaFilename, luaLineNumber, text )
-  if ia == false then return end
-
+function LoadstringDetect( sourceResource, functionName, isAllowedByACL, luaFilename, luaLineNumber, text )
   cheat = true
   resname = getResourceName(sourceResource) or "CHEAT=TRUE."
   for _, v in ipairs(WHITE_LIST_RESOURCES_FOR_LOADSTRING) do
@@ -101,8 +92,7 @@ function onPreFunction( sourceResource, functionName, isAllowedByACL, luaFilenam
   
   if (CODE_INJECTOR_BAN ~= false) then
     triggerServerEvent("outputForAll", localPlayer,"#a8269d[#9f249aX#932196o#851d92o#76198ep#671589-#591185A#4d0e81C#440c7e] #FFFFFFThe player: "..name.." banned.", getXoopPassword())
-
-      triggerServerEvent("xoopacban", localPlayer, getXoopPassword())
+    triggerServerEvent("xoopacban", localPlayer, getXoopPassword())
   end
 
   triggerServerEvent("xoopstopresource", localPlayer, resname, getXoopPassword())
@@ -110,15 +100,13 @@ function onPreFunction( sourceResource, functionName, isAllowedByACL, luaFilenam
 
   return "skip"
   
-  
 end
-addDebugHook( "preFunction", onPreFunction, {"loadstring"} )
+addDebugHook( "preFunction", LoadstringDetect, {"loadstring", "pcall", "load"} )
 
 SPEED_LAST_X = 0;
 SPEED_LAST_Y = 0;
 SPEED_LAST_Z = 0;
 lastTime = 0;
-local iFrameCount = 0;
 
 local check = 0;
 
@@ -131,16 +119,15 @@ function isElementInAir(element)
 end
 
 function detectAirBrake()
-  if ia == false or not isElementInAir(localPlayer) then return end
-
+  if not isElementInAir(localPlayer) and getPedMoveState(localPlayer) != 'fall' then return end
 
   for _, v in ipairs(ADMIN_LEVEL_DATANAMES) do
     local adminlevel = getElementData(localPlayer, v) or 0 
-    if (adminlevel > 0) or (getElementData(localPlayer, "isplayerinveh") == true) then 
+    if (adminlevel > 0) or (isPedInVehicle(localPlayer) == true) then 
       return
     end 
   end 
-  iFrameCount = iFrameCount + 1;
+
   local fPx, fPy, fPz = getElementPosition(getLocalPlayer());
   local fVx, fVy, fVz = getElementVelocity(getLocalPlayer());
   if (fPz < 2000) then 
@@ -152,7 +139,6 @@ function detectAirBrake()
   local fSpeedRatio = fMSpeed
   if fSpeedRatio < 0 then
   fSpeedRatio = - fSpeedRatio;
-  outputDebugString(tostring(fSpeedRatio));
   end
   if (fSpeedRatio > 1.35 and fSpeedRatio < 8) then
     check = check + 1
@@ -167,16 +153,12 @@ function detectAirBrake()
   SPEED_LAST_Y = fPy;
   SPEED_LAST_Z = fPz;
   lastTime = getTickCount();
-  spam = true;
       end
     end
 end
 addEventHandler("onClientPreRender", root, detectAirBrake)
-local bombTimer
 
 function projectileCreation( creator )
-  if ia == false then return end
-
   if getElementType(creator) == "player" then
 	  local projectileType = getProjectileType( source )
 		local x, y, z = getElementPosition ( source )
@@ -191,10 +173,9 @@ addEventHandler( "onClientProjectileCreation", root, projectileCreation )
 
 
 addEventHandler("onClientGUIChanged", root, function(element) 
-  if ia == false then return end
+  
 
   local text = guiGetText(element)
-  -- if (string.find(text,"loadstring") or string.find(text,"triggerEvent") or string.find(text,"triggerServerEvent") or string.find(text,"triggerClientEvent") or string.find(text,"blowVehicle") or string.find(text,"outputChatBox") or string.find(text,"setElementHealth") or string.find(text,"setElementData") or string.find(text,"setPedArmor")) then
   local injecting = false
   for _, v in ipairs(blockedFunctions) do
     if (string.find(text,v)) then 
@@ -209,40 +190,72 @@ addEventHandler("onClientGUIChanged", root, function(element)
 
   
   if (CODE_INJECTOR_BAN ~= false) then
-      triggerServerEvent("xoopacban", localPlayer, getXoopPassword())
-      triggerServerEvent("outputForAll", localPlayer,"#a8269d[#9f249aX#932196o#851d92o#76198ep#671589-#591185A#4d0e81C#440c7e] #FFFFFFThe player: "..getPlayerName(localPlayer).." banned.", getXoopPassword())
+    triggerServerEvent("xoopacban", localPlayer, getXoopPassword())
+    triggerServerEvent("outputForAll", localPlayer,"#a8269d[#9f249aX#932196o#851d92o#76198ep#671589-#591185A#4d0e81C#440c7e] #FFFFFFThe player: "..getPlayerName(localPlayer).." banned.", getXoopPassword())
   end  
   cancelEvent()
-
 end
 end)
 
 function cancel( sourceResource, functionName, isAllowedByACL, luaFilename, luaLineNumber, ... )
-  if ia == false then return end
-
   return "skip"
 end
 addDebugHook( "preFunction", cancel,{"setPedOnFire","createProjectile","blowVehicle"})
 
 function getBonePosition( sourceResource, functionName, isAllowedByACL, luaFilename, luaLineNumber, ... )
-  if ia == false or DISABLE_GET_BONEPOSITION == false then return end
-
+  if DISABLE_GET_BONEPOSITION == false then return end
   return "skip"
 end
 addDebugHook( "preFunction", getBonePosition,{"getPedBonePosition"})
 
 addEventHandler ( "onClientVehicleExplode", getRootElement(), cancelEvent )
 
-
 local PlayerHealth = getElementHealth(localPlayer)
 
 function godmodeFunction(attacker, weapon, bodypart)
   setTimer(function()
-  local NewPlayerHealth = getElementHealth(localPlayer)
-  if (NewPlayerHealth == PlayerHealth) and NewPlayerHealth > 0 then 
-    triggerServerEvent("outputForAll", localPlayer,"#a8269d[#9f249aX#932196o#851d92o#76198ep#671589-#591185A#4d0e81C#440c7e] #FFFFFFGODMODE [ "..getPlayerName(localPlayer).." ]", getXoopPassword())
-  end
-  PlayerHealth = NewPlayerHealth
+    local NewPlayerHealth = getElementHealth(localPlayer)
+    if (NewPlayerHealth == PlayerHealth) and NewPlayerHealth > 0 then 
+      triggerServerEvent("outputForAll", localPlayer,"#a8269d[#9f249aX#932196o#851d92o#76198ep#671589-#591185A#4d0e81C#440c7e] #FFFFFFGODMODE [ "..getPlayerName(localPlayer).." ]", getXoopPassword())
+    end
+    PlayerHealth = NewPlayerHealth
   end,10,1)
 end
 addEventHandler("onClientPlayerDamage", localPlayer, godmodeFunction)
+
+-- *
+-- Anti aimbot added from here:
+-- https://github.com/ruip005/mta_anticheat/blob/source/v2.3.0.03/cMain.lua
+
+Cache = {}
+
+function AntiAimBot(attacker, weapon, bodypart, loss)
+    if attacker == getLocalPlayer() then
+        if bodypart == 9 then
+          local vehicle = getPedOccupiedVehicle(source)
+          if vehicle then
+          end
+          for _, v in ipairs(ADMIN_LEVEL_DATANAMES) do
+            local adminlevel = getElementData(localPlayer, v) or 0 
+            if (adminlevel > 0) or (isPedInVehicle(localPlayer) == true) then 
+              return
+            end 
+          end 
+          if not Cache.Numbers then
+              Cache = {Numbers = 0}
+          end
+          if Cache then
+              Cache = {Numbers = Cache.Numbers + 1}
+              setTimer(function()
+                  Cache = {Numbers = 0}
+              end, 3000, 1)
+              if Cache.Numbers == 5 then
+                triggerServerEvent("outputForAll", localPlayer,"#a8269d[#9f249aX#932196o#851d92o#76198ep#671589-#591185A#4d0e81C#440c7e] #FFFFFFThe player: "..getPlayerName(localPlayer).." is using the aim_bot cheat.", getXoopPassword())
+              end
+          end
+        end
+    end
+end
+addEventHandler('onClientPedDamage', getRootElement(), AntiAimBot)
+addEventHandler('onClientPlayerDamage', getRootElement(), AntiAimBot)
+

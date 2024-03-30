@@ -5,9 +5,12 @@
 
 ]]
 
+-- if you enable this, setElementData(player, "admin_level") will be overridden
 ADMIN_LEVEL_LOCK = false
+
 CODE_INJECTOR_BAN = false
-DISABLE_JETPACK = true
+
+DISABLE_JETPACK = false
 
 WHITE_LIST_RESOURCES_FOR_LOADSTRING = {
   "resourcename",
