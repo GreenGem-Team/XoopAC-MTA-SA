@@ -232,9 +232,6 @@ Cache = {}
 function AntiAimBot(attacker, weapon, bodypart, loss)
     if attacker == getLocalPlayer() then
         if bodypart == 9 then
-          local vehicle = getPedOccupiedVehicle(source)
-          if vehicle then
-          end
           for _, v in ipairs(ADMIN_LEVEL_DATANAMES) do
             local adminlevel = getElementData(localPlayer, v) or 0 
             if (adminlevel > 0) or (isPedInVehicle(localPlayer) == true) then 
