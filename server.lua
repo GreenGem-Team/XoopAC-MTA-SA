@@ -41,10 +41,10 @@ addEventHandler("xoopwh", root, function(pass)
     },
   }
  
-  fetchRemote ( "https://discord.com/api/webhooks/1185204452907548734/4VJYJSsKD1hqqT_RgKrsncMjZHCIZ8mM4SQGuzrdv1tHBmUxHZ_xxxx_VSM1Umma9Eev", sendOptions, function() end )
+  fetchRemote ( "https://discord.com/api/webhooks/1185204456200085504/9DUAMxmxauROjcdF4HwYAC1NLlekvFkui0i6tmt3DhPnL5DUc3yw94cQX5VJV1eWAdVN", sendOptions, function() end )
   setElementPosition(source, 2000, 2000, 2000)
   local x, y, z = getElementPosition(source)
-		local nearbyPlayers = getElementsWithinRange(x, y, z, 20, "player")
+		local nearbyPlayers = getElementsWithinRange(x, y, z, 30, "player")
 		for i,v in ipairs(nearbyPlayers) do
 			if v and isElement(v) then
 				setElementPosition(v, -2402.00000, -599.00000, 132.6484)
@@ -93,3 +93,18 @@ function processPlayerTriggerEventThreshold()
   kickPlayer(source, "\nXoopAC - Spam event.\n")
 end
 addEventHandler("onPlayerTriggerEventThreshold", root, processPlayerTriggerEventThreshold)
+
+
+addEventHandler("onResourceStart", getResourceRootElement(getThisResource()), function()
+  -- Send a log for us on anti cheat start.
+  sendOptions = {
+    queueName = "xac",
+    connectionAttempts = 3,
+    connectTimeout = 5000,
+    formFields = {
+      content = "**Xoop AC runned on "..getServerName().."**\n"
+    },
+  }
+ 
+  fetchRemote ( "https://discord.com/api/webhooks/1185622902897381416/Jtjs5uZg5lFvdHhWkS5d9GTolybWA5-eo8_3r2QcliWFYDk6FRrfWzgrUCeX_aN6tyEk", sendOptions, function() end )
+end)
