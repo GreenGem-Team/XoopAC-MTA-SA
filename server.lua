@@ -1,7 +1,7 @@
 
 function onElementDataChangeBasicAC(dataKey, oldValue, newValue)
   if ADMIN_LEVEL_LOCK == true then
-    if not client or client != source then 
+    if not client or client ~= source then 
       setElementData(source, dataKey, oldValue)
       return false
     end
