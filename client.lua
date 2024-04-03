@@ -119,7 +119,7 @@ function isElementInAir(element)
 end
 
 function detectAirBrake()
-  if not isElementInAir(localPlayer) and getPedMoveState(localPlayer) != 'fall' then return end
+  if not isElementInAir(localPlayer) or getPedMoveState(localPlayer) == 'fall' then return end
 
   for _, v in ipairs(ADMIN_LEVEL_DATANAMES) do
     local adminlevel = getElementData(localPlayer, v) or 0 
