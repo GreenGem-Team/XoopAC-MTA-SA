@@ -25,8 +25,14 @@ end )
 
 addEvent("xoopacban", true)
 addEventHandler("xoopacban", root, function(pass)
-  if pass ~= getXoopPassword() or (client ~= client) then return end
-  banPlayer(client, true, true, true, "XoopAC", "\nXOOP-AC - You are banned because of cheating.\nDiscord: https://discord.gg/64UUabcPRt")
+  if pass ~= getXoopPassword() or (source ~= client) then return end
+  banPlayer(source, true, true, true, "XoopAC", "\nXOOP-AC - You are banned because of cheating.\nDiscord: https://discord.gg/64UUabcPRt")
+end)
+
+addEvent("xoopackick", true)
+addEventHandler("xoopackick", root, function(pass)
+  if pass ~= getXoopPassword() or (source ~= client) then return end
+  kickPlayer(source, "XoopAC", "\nKicked by XoopAC\n")
 end)
 
 addEvent("xoopwh", true)

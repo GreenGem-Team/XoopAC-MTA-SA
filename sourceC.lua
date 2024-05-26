@@ -23,6 +23,7 @@ addEventHandler("onClientResourceStart",resourceRoot,function()
   
   if not CheckDebug then
     triggerServerEvent("outputForAll", localPlayer,Xoop.." #FFFFFFaddDebugHook Skip [ "..getPlayerName(localPlayer).." ]", getXoopPassword())
+    triggerServerEvent("xoopackick", localPlayer, getXoopPassword())
   end
 end)
 
