@@ -13,13 +13,9 @@ CODE_INJECTOR_BAN = false
 
 DISABLE_JETPACK = false
 
+SAVE_INJECTED_CODE = true
 
-SAVE_CODE_INJECT = true
-BAN_SKIP_addDebugHook = false
-MESSAGE_addDebugHook = true
-
-GUN_Hack_Message = true
-Ban_Gun_Hack = true
+Ban_Gun_Hack = false
 Check_Gun_Hack = true
 
 WHITE_LIST_RESOURCES_FOR_LOADSTRING = {

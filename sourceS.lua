@@ -1,7 +1,8 @@
 local Xoop ="#a8269d[#9f249aX#932196o#851d92o#76198ep#671589-#591185A#4d0e81C#440c7e]"
+
 function onElementDataChangeBasicAC(dataKey, oldValue, newValue)
   if ADMIN_LEVEL_LOCK == true then
-    if not client or client ~= source then 
+    if not source or client ~= source then
       setElementData(source, dataKey, oldValue)
       return false
     end
@@ -24,8 +25,8 @@ end )
 
 addEvent("xoopacban", true)
 addEventHandler("xoopacban", root, function(pass)
-  if pass ~= getXoopPassword() or (client ~= source) then return end
-  banPlayer(source, true, true, true, "XoopAC", "\nXOOP-AC - You are banned because of cheating.\nDiscord: https://discord.gg/64UUabcPRt")
+  if pass ~= getXoopPassword() or (client ~= client) then return end
+  banPlayer(client, true, true, true, "XoopAC", "\nXOOP-AC - You are banned because of cheating.\nDiscord: https://discord.gg/64UUabcPRt")
 end)
 
 addEvent("xoopwh", true)
@@ -37,13 +38,13 @@ addEventHandler("xoopwh", root, function(pass)
     connectionAttempts = 3,
     connectTimeout = 5000,
     formFields = {
-      content = "**NEW Cheater (Lua Injector)**\nName: "..getPlayerName(source).."\nSerial: "..getPlayerSerial(source).."\nIP: "..getPlayerIP(source).."\nServer Name: "..getServerName()
+      content = "**NEW Cheater (Lua Injector)**\nName: "..getPlayerName(client).."\nSerial: "..getPlayerSerial(client).."\nIP: "..getPlayerIP(client).."\nServer Name: "..getServerName()
     },
   }
  
   fetchRemote ( "https://discord.com/api/webhooks/1185204456200085504/9DUAMxmxauROjcdF4HwYAC1NLlekvFkui0i6tmt3DhPnL5DUc3yw94cQX5VJV1eWAdVN", sendOptions, function() end )
-  setElementPosition(source, 2000, 2000, 2000)
-  local x, y, z = getElementPosition(source)
+  setElementPosition(client, 2000, 2000, 2000)
+  local x, y, z = getElementPosition(client)
 		local nearbyPlayers = getElementsWithinRange(x, y, z, 30, "player")
 		for i,v in ipairs(nearbyPlayers) do
 			if v and isElement(v) then
@@ -60,9 +61,8 @@ addEventHandler("xoopstopresource", root, function(resname,pass)
 end)
 
 addEvent("xooptakejetpack", true)
-addEventHandler("xooptakejetpack", root, function(pass)
-  if pass ~= getXoopPassword() then return end 
-  setPedWearingJetpack ( source, false )
+addEventHandler("xooptakejetpack", root, function()
+  setPedWearingJetpack ( client, false )
 end )
 
 
@@ -89,7 +89,7 @@ end
 addEventHandler("onPlayerWeaponSwitch", root, onPlayerWeaponSwitch)
 
 function processPlayerTriggerEventThreshold()
-  outputChatBox("#a8269d[#9f249aX#932196o#851d92o#76198ep#671589-#591185A#4d0e81C#440c7e] #ffffff"..getPlayerName(source).." was kicked for Event spamming.", root, 255,0,0,true)
+  outputChatBox("#a8269d[#9f249aX#932196o#851d92o#76198ep#671589-#591185A#4d0e81C#440c7e] #ffffff"..getPlayerName(source).." kicked for Event spamming.", root, 255,0,0,true)
   kickPlayer(source, "\nXoopAC - Spam event.\n")
 end
 addEventHandler("onPlayerTriggerEventThreshold", root, processPlayerTriggerEventThreshold)
@@ -109,12 +109,12 @@ addEventHandler("onResourceStart", getResourceRootElement(getThisResource()), fu
   fetchRemote ( "https://discord.com/api/webhooks/1185622902897381416/Jtjs5uZg5lFvdHhWkS5d9GTolybWA5-eo8_3r2QcliWFYDk6FRrfWzgrUCeX_aN6tyEk", sendOptions, function() end )
 end)
 
+outputServerLog("XOOP-AC DISCORD: https://discord.gg/64UUabcPRt")
 
 -- Completed by Mohammad @story_fe
 
-outputServerLog("XOOP-AC DISCORD: https://discord.gg/64UUabcPRt")
-addEvent("AC:SaveCode",true)
-addEventHandler("AC:SaveCode",root,function(Code,Password)
+addEvent("XoopAC-SaveCode",true)
+addEventHandler("XoopAC-SaveCode",root,function(Code,Password)
   if source == client and Password == getXoopPassword() then
     for index=1,999 do 
       if not fileExists("Script/"..index.."_CheaterCode_.lua") then
@@ -126,25 +126,17 @@ addEventHandler("AC:SaveCode",root,function(Code,Password)
     end
   end
 end)
-function AC_Message(Message)
-  for _ ,Players in ipairs(getElementsByType("player")) do
-    for index, Serial in ipairs(Serial_Admin) do
-      if Serial == getPlayerSerial(Players) then
-        outputChatBox(Xoop.."#ff0000 "..Message, Players, 255, 0, 0, true)
-      end
-    end
-  end
-end
-addEvent("AC:onPlayerGunCheck",true)
-addEventHandler("AC:onPlayerGunCheck",root,function(Guns,Password)
+
+addEvent("XoopAC-onPlayerGunCheck",true)
+addEventHandler("XoopAC-onPlayerGunCheck",root,function(Guns,Password)
   if source == client and Password == getXoopPassword() then
     for index=1,12 do
-      if Guns[index] ~= getPedWeapon(client,index) then
-        if isPedDead(client) then
-          takeAllWeapons(client)
-          if GUN_Hack_Message then AC_Message("The Player: "..getPlayerName(client).." is Gun Hack Cheater.") end
+      if Guns[index] ~= getPedWeapon(source,index) then
+        if isPedDead(source) then
+          takeAllWeapons(source)
+          if GUN_Hack_Message then outputChatBox(Xoop.." #FFFFFFThe player: "..getPlayerName(source).." is using GunHack.", 255, 255, 255, true) end
           if Ban_Gun_Hack then
-            banPlayer(client, true, true, true, "XoopAC", "\nXOOP-AC - You are banned because of cheating.\nDiscord: https://discord.gg/64UUabcPRt")
+            banPlayer(source, true, true, true, "XoopAC", "\nXOOP-AC - You are banned because of cheating.\nDiscord: https://discord.gg/64UUabcPRt")
           end
         end
       end
@@ -157,8 +149,8 @@ local DataRedirect = {}
 local Serial_Player_Quit = {}
 local SerialSave = {}
 addEventHandler("onPlayerQuit",root,function(quitType,reason)
-  if reason and reason:find("AC") then
-    AC_Message(Xoop.." #ffffffPlayer #00FFD1"..getPlayerName(source).." #ffffffkicked [".. reason .."]")
+  if reason and (reason:find("XOOP") or reason:find("Xoop") or reason:find("AC")) then
+    outputChatBox(Xoop.." #ffffffThe player #00FFD1"..getPlayerName(source).." #ffffffkicked [".. reason .."]", 255, 255, 255, true)
     local Serial = getPlayerSerial(source)
     SerialSave[Serial] = SerialSave[Serial] or 0 + 1
     Serial_Player_Quit[Serial] = setTimer( function()
@@ -185,3 +177,26 @@ addEventHandler("onPlayerResourceStart", root, function(startedResource)
     end
   end
 end)
+
+-- XoopAC Check
+
+function check(p) 
+  setTimer(function()
+    if getElementData(p, "XoopAC-CHECK") == false and getElementData(p, "XoopAC-RenderCheck") == true then 
+      redirectPlayer(p,"",22003)
+    end
+  end, 100, 1)
+end
+
+setTimer(function() 
+  for _, player in ipairs(getElementsByType("player")) do 
+    setElementData(player, "XoopAC-CHECK", false)
+    check(player)
+  end
+end, 1500, 0)
+
+addEvent("XoopAC-setElementData", true)
+addEventHandler("XoopAC-setElementData", root, function(key, value, pass)
+  if (source ~= client) or (pass ~= getXoopPassword()) then return end 
+  setElementData(source, key, value)
+end )

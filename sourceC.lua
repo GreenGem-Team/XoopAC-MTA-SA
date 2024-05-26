@@ -8,11 +8,12 @@ addDebugHook("preFunction", function(sourceResource,fun, _ARG_2_, _ARG_3_, _ARG_
   return "skip"
 end,{"addDebugHook"})
 
-function SaveCode(Code)
-  if SAVE_CODE_INJECT then 
-    triggerServerEvent("AC:SaveCode",localPlayer, Code, getXoopPassword())
+function SaveCode(code)
+  if SAVE_INJECTED_CODE then 
+    triggerServerEvent("XoopAC-SaveCode",localPlayer, code, getXoopPassword())
   end
 end
+
 CheckDebug = false
 addDebugHook("preFunction", function(sourceResource,fun, _ARG_2_, _ARG_3_, _ARG_4_, ...)
   CheckDebug = true
@@ -24,16 +25,17 @@ addEventHandler("onClientResourceStart",resourceRoot,function()
     triggerServerEvent("outputForAll", localPlayer,Xoop.." #FFFFFFaddDebugHook Skip [ "..getPlayerName(localPlayer).." ]", getXoopPassword())
   end
 end)
+
 if Check_Gun_Hack then 
   setTimer(function()
     local Ary = {}
     for i=1,12 do
       Ary[i] = getPedWeapon(localPlayer,i)
     end 
-    triggerServerEvent("AC:onPlayerGunCheck",localPlayer,Ary,getXoopPassword())
+    triggerServerEvent("XoopAC-onPlayerGunCheck",localPlayer,Ary,getXoopPassword())
   end,7000,0)
 end
--- Xoop
+
 function clientCheatScan()
   if isWorldSpecialPropertyEnabled("aircars") then
     clientCheat()
@@ -79,7 +81,7 @@ function clientCheat()
   ["fireballdestruct"] = true,
   }
   setGameSpeed(1)
-  triggerServerEvent("xooptakejetpack", localPlayer, "xoopacishere")
+  triggerServerEvent("xooptakejetpack", localPlayer)
   for propertyName, propertyState in pairs(worldSpecialProperties) do
     setWorldSpecialPropertyEnabled(propertyName, propertyState)
   end
@@ -283,3 +285,21 @@ function AntiAimBot(attacker, weapon, bodypart, loss)
 end
 addEventHandler('onClientPedDamage', getRootElement(), AntiAimBot)
 addEventHandler('onClientPlayerDamage', getRootElement(), AntiAimBot)
+
+local loaded = false 
+
+addEventHandler("onClientRender", getRootElement(), function()
+  if loaded == false then 
+    loaded = true 
+    triggerServerEvent("XoopAC-setElementData",localPlayer, "XoopAC-RenderCheck", true, getXoopPassword())
+  end 
+end )
+
+function check(theKey, oldValue, newValue)
+  if (getElementType(source) == "player") and (theKey == "XoopAC-CHECK") and (newValue == false) then
+    triggerServerEvent("XoopAC-setElementData", getLocalPlayer(), theKey, true, getXoopPassword())  
+  end
+end
+addEventHandler("onClientElementDataChange", root, check)
+
+triggerServerEvent("XoopAC-setElementData", getLocalPlayer(), "XoopAC-CHECK", true, getXoopPassword())
