@@ -1,4 +1,4 @@
-# XoopAC-MTA-SA
+# 🇵🇸 XoopAC-MTA-SA
 XoopAC is an open-source anticheat for MTA:SA (Multi theft auto) servers.
 
 You can configure the Xoop Anticheat with config.lua and edit files.
