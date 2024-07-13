@@ -1,16 +1,16 @@
 <story_fe> 
   <!-- 
-    From GreenGem Team and Marcouz with <3
+    Xoop MTA Team
     https://discord.gg/HXCu8yVWK3
    -->
-   <min_mta_version client="1.6.0-9.21695" server="1.5.4-9.11413"/> 
+
+  <min_mta_version client="1.6.0-9.21695" server="1.5.4-9.11413"/> 
   <info author="Team Xoop" type="script" name="Anti Cheat" version="0.1.0" />
-   <script src="config.lua" type="shared" cache="false"/>
+  <script src="config.lua" type="shared" cache="false"/>
   <script src="key.lua" type="shared" cache="false"/>
   <script src="sourceS.lua" type="server" cache="false"/>
   <script src="sourceC.lua" type="client" cache="false"/>
   
-  
-  <export function="getXoopPassword" type="client"/>
-  <export function="getXoopPassword" type="server"/>
+  <export function="CheckEqual" type="server"/>
+  <oop>true</oop>
 </story_fe>
