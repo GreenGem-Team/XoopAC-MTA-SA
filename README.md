@@ -3,7 +3,7 @@ XoopAC is an open-source anticheat for MTA:SA (Multi theft auto) servers.
 
 You can see the logs in logs/msCheater.txt
 
-You can configure the Xoop Anticheat with config.lua and edit files.
+You can configure the Xoop Anticheat with config.lua and editing the files.
 
 If Xoop makes fps drop on your server, make a new resource and copy the methods of XoopAC one by one to find which function makes the fps drop.
 
