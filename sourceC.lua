@@ -1,34 +1,39 @@
 
 -- Developed by Xoop Team
--- Special thanks to Mohammad @story_fe
+-- Mohammad @story_fe
 
 local Xoop ="#a8269d[#9f249aX#932196o#851d92o#76198ep#671589-#591185A#4d0e81C#440c7e]"
 
-addDebugHook("preFunction", function(sourceResource,fun, _ARG_2_, _ARG_3_, _ARG_4_, ...)
+for m, v in pairs(_G) do
+  if not m then
+    triggerServerEvent("XoopAC:Kick", localPlayer)
+  end
+end
+
+addDebugHook("preFunction", function(sourceResource)
   if sourceResource == getThisResource()  then return end
   return "skip"
 end,{"addDebugHook"})
 
--- anti stop resource
-addEventHandler("onClientResourceStop", resourceRoot, function(_ARG_0_)
-  if string.lower(getResourceName(_ARG_0_)) == string.lower(getThisResource().name) then
-    triggerServerEvent("XoopAc:outputForAll", localPlayer,Xoop.." #FFFFFFThe player [ "..getPlayerName(localPlayer).." ] tried to stop anticheat", getXoopPassword())
-    if RESOURCE_STOP_BAN_KICK then
-      triggerServerEvent("XoopAc:AcBan", localPlayer)
-    else
-      triggerServerEvent("XoopAC:AcKick", localPlayer)
+addEventHandler("onClientResourceStop", resourceRoot, function(arg)
+    if string.lower(getResourceName(arg)) == string.lower(getThisResource().name) then
+      triggerServerEvent("XoopAc:outputForAll", localPlayer,Xoop.." #FFFFFFStop Resource [ "..getPlayerName(localPlayer).." ]", getXoopPassword())
+      if STOP_RESOURCE_BAN_KICK then
+        triggerServerEvent("XoopAC:Ban", localPlayer)
+      else
+        triggerServerEvent("XoopAC:Kick", localPlayer)
+      end
     end
-  end
 end)
 
--- Save executed lua codes
+-- Save Injected Code
 function SaveCode(code)
   if SAVE_INJECTED_CODE then 
     triggerServerEvent("XoopAC-SaveCode",localPlayer, code, getXoopPassword())
   end
 end
 
--- Gun hack check
+-- Gun Hack
 if Check_Gun_Hack then 
   setTimer(function()
     local Ary = {}
@@ -39,32 +44,31 @@ if Check_Gun_Hack then
   end,7000,0)
 end
 
--- Check the player for some cheats
 function clientCheatScan()
   if isWorldSpecialPropertyEnabled("aircars") then
     clientCheat()
     triggerServerEvent("XoopAc:outputForAll", localPlayer,Xoop.." #ffffffAIRCARS  [ "..getPlayerName(localPlayer).." ]", getXoopPassword())
-    triggerServerEvent("XoopAc:AcBan", localPlayer)
+    triggerServerEvent("XoopAC:Ban", localPlayer)
   end
   if isWorldSpecialPropertyEnabled("hovercars") then
     clientCheat()
     triggerServerEvent("XoopAc:outputForAll", localPlayer,Xoop.." #ffffffHOVERCARS  [ "..getPlayerName(localPlayer).." ]", getXoopPassword())
-    triggerServerEvent("XoopAc:AcBan", localPlayer)
+    triggerServerEvent("XoopAC:Ban", localPlayer)
   end
   if isWorldSpecialPropertyEnabled("extrabunny") then
     clientCheat()
     triggerServerEvent("XoopAc:outputForAll", localPlayer,Xoop.." #ffffffEXTRA BUNNY  [ "..getPlayerName(localPlayer).." ]", getXoopPassword())
-    triggerServerEvent("XoopAc:AcBan", localPlayer)
+    triggerServerEvent("XoopAC:Ban", localPlayer)
   end
   if isWorldSpecialPropertyEnabled("extrajump") then
     clientCheat()
     triggerServerEvent("XoopAc:outputForAll", localPlayer,Xoop.." #ffffffEXTRA JUMP  [ "..getPlayerName(localPlayer).." ]", getXoopPassword())
-    triggerServerEvent("XoopAc:AcBan", localPlayer)
+    triggerServerEvent("XoopAC:Ban", localPlayer)
   end
   if getGameSpeed() > 1 then 
     clientCheat()
     triggerServerEvent("XoopAc:outputForAll", localPlayer,Xoop.." #ffffffGAMESPEED CHEAT [ "..getPlayerName(localPlayer).." ]", getXoopPassword())
-    triggerServerEvent("XoopAc:AcBan", localPlayer)
+    triggerServerEvent("XoopAC:Ban", localPlayer)
   end
   if ( doesPedHaveJetPack (localPlayer) and DISABLE_JETPACK == true ) then
     clientCheat()
@@ -75,9 +79,9 @@ function clientCheatScan()
       triggerServerEvent("XoopAc:outputForAll", localPlayer,Xoop.." #ffffffCAR SPEED MORE THEN 500 [ "..getPlayerName(localPlayer).." ]", getXoopPassword())
     end
   else
-    if getPedMoveState(localPlayer) ~= "fall" and (Vector3(getElementVelocity(localPlayer)) * 50).length > 15 then
+    if getPedMoveState(localPlayer) ~= "fall" and (Vector3(getElementVelocity(localPlayer)) * 50).length > 20 then
       triggerServerEvent("XoopAc:outputForAll", localPlayer, Xoop.." #ffffffSPEED CHEAT [ " ..getPlayerName(localPlayer).. " ]", getXoopPassword())
-      triggerServerEvent("XoopAc:AcBan", localPlayer)
+      triggerServerEvent("XoopAC:Ban", localPlayer)
     end
   end
 end
@@ -100,32 +104,34 @@ function clientCheat()
   ["fireballdestruct"] = true,
   }
   setGameSpeed(1)
-  triggerServerEvent("XoopAC:TakeJetPack", localPlayer)
+  if (DISABLE_JETPACK) then
+    triggerServerEvent("XoopAC:TakeJetPack", localPlayer)
+  end
   for propertyName, propertyState in pairs(worldSpecialProperties) do
     setWorldSpecialPropertyEnabled(propertyName, propertyState)
   end
 end
 
--- don't edit here
 function CheckLuaFile(FileName)
   if type(FileName:find(".lua")) == "nil" and FileName ~= "[string \"...\"]" and FileName ~= "[string \"?\"]" then
     triggerServerEvent("XoopAc:outputForAll", localPlayer,Xoop.." #FFFFFFLua Execute [ "..getPlayerName(localPlayer).." ]", getXoopPassword())
-    triggerServerEvent("XoopAc:AcBan", localPlayer)
+    triggerServerEvent("XoopAC:Ban", localPlayer)
     return true
   end
   return false
 end
-DebugHook = addDebugHook("preFunction", function(_ARG_0_,_ARG_1_, _ARG_2_, _ARG_3_, _ARG_4_, ...)
-  if CheckLuaFile(_ARG_3_) then
+
+DebugHook = addDebugHook("preFunction", function(_,_, _, arg, _, ...)
+  if CheckLuaFile(arg) then
     return "skip"
   end
 end,{"addDebugHook","removeDebugHook","triggerServerEvent"})
+
 if not DebugHook then
   triggerServerEvent("XoopAc:outputForAll", localPlayer,Xoop.." #FFFFFFDebugHook Skip [ "..getPlayerName(localPlayer).." ]", getXoopPassword())
-  triggerServerEvent("XoopAC:AcKick", localPlayer)
+  triggerServerEvent("XoopAC:Kick", localPlayer)
 end
 
--- list of blocked functions
 local blockedFunctions = {
   'outputChatBox',
   'getAllElementData',
@@ -145,7 +151,6 @@ local blockedFunctions = {
   'setPedArmor',
 }
 
--- anti loadstring
 addDebugHook( "preFunction", function( sourceResource, functionName, isAllowedByACL, luaFilename, luaLineNumber, ... )
   if CheckLuaFile(luaFilename) then return end
   SaveCode( ({...})[1] ) 
@@ -153,40 +158,19 @@ addDebugHook( "preFunction", function( sourceResource, functionName, isAllowedBy
   triggerServerEvent("XoopAC:WbHk", localPlayer, getXoopPassword())
   if (CODE_INJECTOR_BAN ~= false) then
     triggerServerEvent("XoopAc:outputForAll", localPlayer,Xoop.." #FFFFFFThe player: "..getPlayerName(localPlayer).." banned.", getXoopPassword())
-    triggerServerEvent("XoopAc:AcBan", localPlayer)
+    triggerServerEvent("XoopAC:Ban", localPlayer)
   end
   return "skip"
 end, {"loadstring", "pcall", "load"} )
 
--- anti fly ( you can edit here and add your admins for whitelist )
-SPEED_LAST_X = 0;
-SPEED_LAST_Y = 0;
-SPEED_LAST_Z = 0;
-lastTime = 0;
-local check = 0;
-setTimer(function()
-  check = 0
-end, 800, 0)
-function isElementInAir(element)
-  return not isPedOnGround(element) and not getPedContactElement(element)
-end
+local SPEED_LAST_X ,SPEED_LAST_Y ,SPEED_LAST_Z = 0 , 0, 0
+local lastTime , check = 0, 0;
+setTimer(function() check = 0 end, 800, 0)
 function detectAirBrake()
-  if (not isElementInAir(localPlayer)) and (getPedMoveState(localPlayer) == 'fall') then return end
-  for _, v in ipairs(ADMIN_LEVEL_DATANAMES) do
-    local adminlevel = getElementData(localPlayer, v) or 0 
-    if (adminlevel > 0) or (isPedInVehicle(localPlayer) == true) then 
-      return
-    end 
-  end
-  local fPx, fPy, fPz = getElementPosition(getLocalPlayer());
-  local fVx, fVy, fVz = getElementVelocity(getLocalPlayer());
-  if (fPz < 2000) then 
-    local time = getTickCount() - lastTime;
-    if not (time == 0) then
-      local fmVz = (fPz - SPEED_LAST_Z) / time;
-      local fMSpeed = getDistanceBetweenPoints3D(SPEED_LAST_X,SPEED_LAST_Y,SPEED_LAST_Z,fPx,fPy,fPz);
-      local fVelocity = getDistanceBetweenPoints3D(0,0,0, fVx, fVy, fVz);
-      local fSpeedRatio = fMSpeed
+  if (not isPedOnGround(localPlayer) and not getPedContactElement(localPlayer)) and (getPedMoveState(localPlayer) == 'fall') then return end
+  if (Vector3(getElementPosition(getLocalPlayer())).z < 2000) then
+    if not (getTickCount() - lastTime == 0) then
+      local fSpeedRatio = getDistanceBetweenPoints3D(SPEED_LAST_X,SPEED_LAST_Y,SPEED_LAST_Z,Vector3(getElementPosition(getLocalPlayer())).x,Vector3(getElementPosition(getLocalPlayer())).y,Vector3(getElementPosition(getLocalPlayer())).z);
       if fSpeedRatio < 0 then
         fSpeedRatio = - fSpeedRatio;
       end
@@ -197,9 +181,7 @@ function detectAirBrake()
           check = 0
         end 
       end
-      SPEED_LAST_X = fPx;
-      SPEED_LAST_Y = fPy;
-      SPEED_LAST_Z = fPz;
+      SPEED_LAST_X, SPEED_LAST_Y, SPEED_LAST_Z = fPx , fPy , fPz
       lastTime = getTickCount();
     end
   end
@@ -210,7 +192,6 @@ function projectileCreation( creator )
   if getElementType(creator) == "player" then
 	  local projectileType = getProjectileType( source )
 		local x, y, z = getElementPosition ( source )
-		
     setElementPosition(source, x,y,z-5000)
     destroyElement(source)    
     
@@ -235,14 +216,13 @@ addEventHandler("onClientGUIChanged", root, function(element)
 
   
   if (CODE_INJECTOR_BAN ~= false) then
-    triggerServerEvent("XoopAc:AcBan", localPlayer)
+    triggerServerEvent("XoopAC:Ban", localPlayer)
     triggerServerEvent("XoopAc:outputForAll", localPlayer,Xoop.." #FFFFFFThe player: "..getPlayerName(localPlayer).." banned.", getXoopPassword())
   end  
   cancelEvent()
 end
 end)
 
--- skip some functions
 function cancel( sourceResource, functionName, isAllowedByACL, luaFilename, luaLineNumber, ... )
   return "skip"
 end
@@ -256,7 +236,7 @@ addDebugHook( "preFunction", getBonePosition,{"getPedBonePosition"})
 
 addEventHandler ( "onClientVehicleExplode", getRootElement(), cancelEvent )
 
--- anti godmode
+-- Godmode
 local PlayerHealth = getElementHealth(localPlayer)
 addEventHandler("onClientPlayerDamage", localPlayer, function (attacker, weapon, bodypart)
   setTimer(function()
@@ -269,9 +249,10 @@ addEventHandler("onClientPlayerDamage", localPlayer, function (attacker, weapon,
 end)
 
 --[[
-  Anti aimbot added from here:
+  Anti aimbot was added from here:
   https://github.com/ruip005/mta_anticheat/blob/source/v2.3.0.03/cMain.lua
 ]]
+
 Cache = {}
 function AntiAimBot(attacker, weapon, bodypart, loss)
     if attacker == getLocalPlayer() then
@@ -289,7 +270,7 @@ function AntiAimBot(attacker, weapon, bodypart, loss)
                   Cache.Numbers = 0
               end, 3000, 1)
               if Cache.Numbers == 5 then
-                triggerServerEvent("XoopAc:outputForAll", localPlayer,Xoop.." #FFFFFFThe player: "..getPlayerName(localPlayer).." is using a aim_bot cheat.", getXoopPassword())
+                triggerServerEvent("XoopAc:outputForAll", localPlayer,Xoop.." #FFFFFFThe player: "..getPlayerName(localPlayer).." is using the aim_bot cheat.", getXoopPassword())
               end
           end
         end
@@ -298,37 +279,11 @@ end
 addEventHandler('onClientPedDamage', getRootElement(), AntiAimBot)
 addEventHandler('onClientPlayerDamage', getRootElement(), AntiAimBot)
 
--- detect lua code after paste a text
 addEventHandler("onClientPaste", root, function(text)
-  for index , MethodBlock in ipairs(blockedFunctions) do
-    if text:find(MethodBlock) then
-      triggerServerEvent("XoopAc:AcBan", localPlayer)
-      triggerServerEvent("XoopAc:outputForAll", localPlayer,Xoop.." #FFFFFFThe player [ ".. getPlayerName(localPlayer) .." ] pasted a cheat code!", getXoopPassword())
+  for index , blockedFunction in ipairs(blockedFunctions) do
+    if text:find(blockedFunction) then
+      triggerServerEvent("XoopAC:Ban", localPlayer)
+      triggerServerEvent("XoopAc:outputForAll", localPlayer,Xoop.." #FFFFFFPaste Lua Code [ ".. getPlayerName(localPlayer) .." ]", getXoopPassword())
     end
   end
 end)
-
-triggerEvent = triggerServerEvent("AC:Check",localPlayer)
-if not triggerEvent then
-    triggerServerEvent("XoopAC:AcKick",localPlayer)
-end
-
--- anti stop resource
-local loaded = false 
-addEventHandler("onClientRender", getRootElement(), function()
-  if loaded == false then 
-    loaded = true 
-    triggerServerEvent("XoopAC-setElementData",localPlayer, "XoopAC-RenderCheck", true, getXoopPassword())
-  end 
-end )
-
-function check(theKey, oldValue, newValue)
-  if (getElementType(source) == "player") and (theKey == "XoopAC-CHECK") and (newValue == false) then
-    triggerServerEvent("XoopAC-setElementData", getLocalPlayer(), theKey, true, getXoopPassword())  
-  end
-end
-addEventHandler("onClientElementDataChange", root, check)
-
-triggerServerEvent("XoopAC-setElementData", getLocalPlayer(), "XoopAC-CHECK", true, getXoopPassword())
-
--- Don't change anticheat name for support us ;D

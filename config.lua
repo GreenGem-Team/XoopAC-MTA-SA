@@ -1,9 +1,12 @@
 --[[
+
   Xoop-Anticheat
   Discord: https://discord.gg/64UUabcPRt
+
 ]]
 
-ADMIN_LEVEL_LOCK = false -- if you enable this, setElementData(player, "admin_level") will be overridden
+-- if you enable this, setElementData(player, "admin_level") will be overridden
+ADMIN_LEVEL_LOCK = false
 
 CODE_INJECTOR_BAN = false
 
@@ -13,15 +16,11 @@ SAVE_INJECTED_CODE = true
 
 Ban_Gun_Hack = false
 Check_Gun_Hack = true
-GUN_Hack_Message = true
 
 --trigger
-
-CHECK_TRIGGER = true
-
 Ban_Kick_Fake_TRIGGER = false -- [true = Ban ,false = kick]
 
-RESOURCE_STOP_BAN_KICK = true -- [true = Ban ,false = kick]
+STOP_RESOURCE_BAN_KICK = true -- [true = Ban ,false = kick]
 
 WHITE_LIST_RESOURCES_FOR_LOADSTRING = {
   "resourcename",
