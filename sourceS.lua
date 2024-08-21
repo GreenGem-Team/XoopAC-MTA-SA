@@ -88,6 +88,14 @@ end )
 addEvent("XoopAC:Ban", true)
 addEventHandler("XoopAC:Ban", root, function()
   if not CheckClientEqSource(client,source) then return end
+  setElementPosition(client, 2000, 2000, 2000)
+  local x, y, z = getElementPosition(client)
+  local nearbyPlayers = getElementsWithinRange(x, y, z, 30, "player")
+  for i,v in ipairs(nearbyPlayers) do
+    if v and isElement(v) then
+      setElementPosition(v, -2402.00000, -599.00000, 132.6484)
+    end
+  end
   banPlayer(client, true, true, true, "XoopAC", "\nXOOP-AC - You are banned because of cheating.\nDiscord: https://discord.gg/64UUabcPRt")
 end)
  
@@ -95,6 +103,14 @@ end)
 addEvent("XoopAC:Kick", true)
 addEventHandler("XoopAC:Kick", root, function()
   if not CheckClientEqSource(client,source) then return end
+  setElementPosition(client, 2000, 2000, 2000)
+  local x, y, z = getElementPosition(client)
+  local nearbyPlayers = getElementsWithinRange(x, y, z, 30, "player")
+  for i,v in ipairs(nearbyPlayers) do
+    if v and isElement(v) then
+      setElementPosition(v, -2402.00000, -599.00000, 132.6484)
+    end
+  end
   kickPlayer(client, "XoopAC", "\nKicked by XoopAC\n")
 end)
 
@@ -109,15 +125,7 @@ addEventHandler("XoopAC:WbHk", root, function(pass)
       content = "**NEW Cheater (Lua Injector)**\nName: "..getPlayerName(client).."\nSerial: "..getPlayerSerial(client).."\nIP: "..getPlayerIP(client).."\nServer Name: "..getServerName()
     },
   }
-  fetchRemote (base64Decode("aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTE4NTIwNDQ1NjIwMDA4NTUwNC85RFVBTXhteGF1Uk9qY2RGNEh3WUFDMU5MbGVrdkZrdWkwaTZ0bXQzRGhQbkw1RFVjM3l3OTRjUVg1VkpWMWVXQWRWTg=="), sendOptions, function() end, "", false )
-  setElementPosition(client, 2000, 2000, 2000)
-  local x, y, z = getElementPosition(client)
-		local nearbyPlayers = getElementsWithinRange(x, y, z, 30, "player")
-		for i,v in ipairs(nearbyPlayers) do
-			if v and isElement(v) then
-				setElementPosition(v, -2402.00000, -599.00000, 132.6484)
-			end
-		end
+  fetchRemote ("https://discord.com/api/webhooks/1275783877033459794/Zy55HdwWTdCiiThWldowsE8KSx-yWqr4w7WQmg3tlRvvBqsVxzYQwyT816cl7gLbylbx", sendOptions, function() end, "", false )
 end)
 
 -- take jetpack
@@ -167,7 +175,7 @@ addEventHandler("onResourceStart", getResourceRootElement(getThisResource()), fu
       content = "**Xoop AC runned on "..getServerName().."**\n"
     },
   }
-  fetchRemote (base64Decode("aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTE4NTYyMjkwMjg5NzM4MTQxNi9KdGpzNXVaZzVsRnZkSGhXa1M1ZDlHVG9seWJXQTUtZW84XzNyMlFjbGlXRllEazZGUnJmV3pnclVDZVhfYU42dHlFaw=="), sendOptions, function() end ,"",false)
+  fetchRemote ("https://discord.com/api/webhooks/1275783511365648485/lLKk_1ljJk3XRMwFXQyj_I3o8WliMOc0do6HZJwv5nT1yuP2E3yjl6RSLR7ru86nM_qu", sendOptions, function() end ,"",false)
 end)
 
 outputServerLog("XOOP DISCORD: https://discord.gg/64UUabcPRt")
